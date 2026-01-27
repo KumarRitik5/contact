@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import ContactCard from './components/ContactCard.jsx';
+import BusinessCard from './components/BusinessCard.jsx';
 import ContactForm from './components/ContactForm.jsx';
 import Footer from './components/Footer.jsx';
 import SocialLinks from './components/SocialLinks.jsx';
@@ -20,7 +20,7 @@ export default function App() {
 
   const subtitle = useMemo(() => {
     if (CONTACT.tagline) return CONTACT.tagline;
-    return 'Reach out for collaborations, opportunities, or a quick hello.';
+    return 'Software engineer contact card and message form.';
   }, []);
 
   return (
@@ -30,7 +30,10 @@ export default function App() {
           <div>
             <div className="eyebrow">Contact</div>
             <h1 className="title">{CONTACT.name}</h1>
-            <p className="subtitle">{subtitle}</p>
+            <p className="subtitle">
+              <span style={{ fontWeight: 800 }}>{CONTACT.role}</span>
+              {subtitle ? <span> • {subtitle}</span> : null}
+            </p>
           </div>
           <ThemeToggle theme={theme} setTheme={setTheme} />
         </div>
@@ -38,7 +41,7 @@ export default function App() {
 
       <main className="container grid">
         <section className="stack">
-          <ContactCard contact={CONTACT} />
+          <BusinessCard contact={CONTACT} />
           <SocialLinks links={CONTACT.socialLinks} />
           <div className="note">
             <div className="note__title">Quick tip</div>
