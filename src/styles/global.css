@@ -196,6 +196,18 @@ a { color: inherit; }
   border-color: rgba(255, 255, 255, 0.22);
 }
 
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border);
+}
+
 .btn:focus-visible {
   outline: none;
   box-shadow: var(--ring);

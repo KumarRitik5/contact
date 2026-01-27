@@ -3,7 +3,7 @@ export const CONTACT = {
   tagline: 'Let’s build something great together.',
 
   // Update these if you want buttons + copy helpers.
-  email: '',
+  email: 'ritikkumar12bicbly@gmail.com',
   phone: '',
   location: '',
 
@@ -29,5 +29,5 @@ export const CONTACT = {
   ],
 
   // Used for mailto fallback when no endpoint is configured.
-  mailtoTo: '',
+  mailtoTo: 'ritikkumar12bicbly@gmail.com',
 };

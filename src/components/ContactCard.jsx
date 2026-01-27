@@ -20,7 +20,7 @@ export default function ContactCard({ contact }) {
             <div className="kv__label">Email</div>
             <div className="row">
               <div className="kv__value">{pretty(contact.email)}</div>
-              <CopyButton value={contact.email} label="Copy email" disabled={!contact.email} />
+              {contact.email ? <CopyButton value={contact.email} label="Copy email" /> : null}
             </div>
           </div>
 
@@ -28,7 +28,7 @@ export default function ContactCard({ contact }) {
             <div className="kv__label">Phone</div>
             <div className="row">
               <div className="kv__value">{pretty(contact.phone)}</div>
-              <CopyButton value={contact.phone} label="Copy phone" disabled={!contact.phone} />
+              {contact.phone ? <CopyButton value={contact.phone} label="Copy phone" /> : null}
             </div>
           </div>
 
