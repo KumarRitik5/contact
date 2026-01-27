@@ -1,11 +1,23 @@
 export const CONTACT = {
   name: 'Ritik Kumar',
+  role: 'Software Engineer',
   tagline: 'Let’s build something great together.',
+
+  bio:
+    'I build fast, reliable web apps with clean UI and solid engineering. Reach out for collaborations, internships, freelance work, or product ideas.',
+
+  skills: ['React', 'JavaScript', 'Node.js', 'REST APIs', 'Git', 'UI/UX'],
+
+  availability: 'Open to opportunities',
 
   // Update these if you want buttons + copy helpers.
   email: 'ritikkumar12bicbly@gmail.com',
   phone: '',
   location: '',
+
+  website: '',
+  github: '',
+  resumeUrl: '',
 
   // Social links pulled from your current HTML.
   socialLinks: [
