@@ -285,7 +285,6 @@ export default function ContactForm({ contact }) {
               />
               <span>
                 I agree to be contacted back at the email provided.
-                <div className="hint">No spam — just a reply.</div>
               </span>
             </span>
             {showError('consent') ? <div className="error">{errors.consent}</div> : null}
@@ -317,21 +316,8 @@ export default function ContactForm({ contact }) {
           {status.state !== 'idle' ? (
             <div className={`status ${status.state === 'success' ? 'status--ok' : ''} ${status.state === 'error' ? 'status--bad' : ''}`}>
               {status.message}
-              {endpoint ? (
-                <div className="hint" style={{ marginTop: 6 }}>
-                  Posting to <span style={{ fontWeight: 800 }}>{endpoint}</span>
-                </div>
-              ) : (
-                <div className="hint" style={{ marginTop: 6 }}>
-                  No endpoint configured (set <span style={{ fontWeight: 800 }}>VITE_CONTACT_ENDPOINT</span> to enable direct POST).
-                </div>
-              )}
             </div>
           ) : null}
-
-          <div className="hint">
-            Draft autosaves locally. This page is front-end only.
-          </div>
         </form>
       </div>
     </div>

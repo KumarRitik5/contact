@@ -60,10 +60,6 @@ export default function ContactCard({ contact }) {
             Call
           </a>
         </div>
-
-        <div style={{ marginTop: 10 }} className="hint">
-          Fill in your email/phone in <span style={{ fontWeight: 800 }}>src/config/contact.js</span> to enable the quick actions.
-        </div>
       </div>
     </div>
   );

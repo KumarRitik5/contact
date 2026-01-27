@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import BusinessCard from './components/BusinessCard.jsx';
+import ContactCard from './components/ContactCard.jsx';
 import ContactForm from './components/ContactForm.jsx';
 import Footer from './components/Footer.jsx';
 import SocialLinks from './components/SocialLinks.jsx';
@@ -19,8 +19,7 @@ export default function App() {
   }, [theme]);
 
   const subtitle = useMemo(() => {
-    if (CONTACT.tagline) return CONTACT.tagline;
-    return 'Software engineer contact card and message form.';
+    return CONTACT.role || CONTACT.tagline || '';
   }, []);
 
   return (
@@ -30,10 +29,7 @@ export default function App() {
           <div>
             <div className="eyebrow">Contact</div>
             <h1 className="title">{CONTACT.name}</h1>
-            <p className="subtitle">
-              <span style={{ fontWeight: 800 }}>{CONTACT.role}</span>
-              {subtitle ? <span> • {subtitle}</span> : null}
-            </p>
+            {subtitle ? <p className="subtitle">{subtitle}</p> : null}
           </div>
           <ThemeToggle theme={theme} setTheme={setTheme} />
         </div>
@@ -41,14 +37,8 @@ export default function App() {
 
       <main className="container grid">
         <section className="stack">
-          <BusinessCard contact={CONTACT} />
+          <ContactCard contact={CONTACT} />
           <SocialLinks links={CONTACT.socialLinks} />
-          <div className="note">
-            <div className="note__title">Quick tip</div>
-            <div className="note__body">
-              If you prefer, use the form on the right — it can either send to your configured endpoint or open a prefilled email.
-            </div>
-          </div>
         </section>
 
         <section className="stack">

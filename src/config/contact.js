@@ -12,31 +12,30 @@ export const CONTACT = {
 
   // Update these if you want buttons + copy helpers.
   email: 'ritikkumar12bicbly@gmail.com',
-  phone: '',
-  location: '',
+  phone: '+919808470386',
+  location: 'Bareilly (Uttar Pradesh)',
 
   website: '',
-  github: '',
+  github: 'https://github.com/KumarRitik5',
   resumeUrl: '',
 
   // Social links pulled from your current HTML.
   socialLinks: [
     {
-      id: 'facebook',
-      label: 'Facebook',
-      href: 'https://www.facebook.com/profile.php?id=100027824941754&mibextid=LQQJ4d',
-    },
-    {
-      id: 'instagram',
-      label: 'Instagram',
-      href:
-        'https://www.instagram.com/official_r_i_t_i_kumar?igsh=MTF1Y2syNjc3YzNydw%3D%3D&utm_source=qr',
+      id: 'github',
+      label: 'GitHub',
+      href: 'https://github.com/KumarRitik5',
     },
     {
       id: 'linkedin',
       label: 'LinkedIn',
       href:
         'https://www.linkedin.com/in/ritik-kumar-ba7931293?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app',
+    },
+    {
+      id: 'email',
+      label: 'Email',
+      href: 'mailto:ritikkumar12bicbly@gmail.com',
     },
   ],
 

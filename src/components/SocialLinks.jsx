@@ -2,12 +2,12 @@ import SocialIcon from './SocialIcon.jsx';
 
 function brandStyle(id) {
   switch (id) {
-    case 'facebook':
-      return { borderColor: 'rgba(59, 89, 152, 0.5)' };
-    case 'instagram':
-      return { borderColor: 'rgba(225, 48, 108, 0.5)' };
     case 'linkedin':
       return { borderColor: 'rgba(0, 119, 181, 0.5)' };
+    case 'github':
+      return { borderColor: 'rgba(255, 255, 255, 0.22)' };
+    case 'email':
+      return { borderColor: 'rgba(110, 231, 255, 0.35)' };
     default:
       return undefined;
   }
@@ -32,9 +32,6 @@ export default function SocialLinks({ links }) {
               {link.label}
             </a>
           ))}
-        </div>
-        <div style={{ marginTop: 10 }} className="hint">
-          Opens in a new tab.
         </div>
       </div>
     </div>
