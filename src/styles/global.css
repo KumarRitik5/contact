@@ -411,6 +411,30 @@ a { color: inherit; }
   font-size: 12px;
 }
 
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.footer__logo {
+  display: block;
+}
+
+.footer__brandText {
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+
 .footer a {
   color: var(--muted);
 }
