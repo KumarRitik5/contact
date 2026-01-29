@@ -346,7 +346,11 @@ export default function ContactForm({ contact }) {
           </div>
 
           {status.state !== 'idle' ? (
-            <div className={`status ${status.state === 'success' ? 'status--ok' : ''} ${status.state === 'error' ? 'status--bad' : ''}`}>
+            <div
+              className={`status ${status.state === 'success' ? 'status--ok' : ''} ${status.state === 'error' ? 'status--bad' : ''}`}
+              role="status"
+              aria-live="polite"
+            >
               {status.message}
             </div>
           ) : null}
