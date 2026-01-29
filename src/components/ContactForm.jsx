@@ -47,7 +47,7 @@ function clearDraft() {
 }
 
 export default function ContactForm({ contact }) {
-  const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
+  const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT || (import.meta.env.PROD ? '/api/contact' : '');
   const emailjsServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
   const emailjsTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
   const emailjsPublicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
