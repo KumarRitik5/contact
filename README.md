@@ -62,6 +62,13 @@ This repo includes a Vercel Serverless Function at `/api/contact` (see `api/cont
 - `CONTACT_TO_EMAIL` (where you want to receive messages)
 - `CONTACT_FROM_EMAIL` (must be a verified sender/domain in Resend)
 
+Optional (basic spam protection):
+
+- `RATE_LIMIT_WINDOW_SECONDS` (default: 600)
+- `RATE_LIMIT_MAX` (default: 5)
+
+Note: this rate limit is best-effort (in-memory per serverless instance). For stronger rate limiting across all instances, use a shared store like Vercel KV/Upstash.
+
 Local note: Vite's `npm run dev` will not run Vercel functions. For local end-to-end testing, use Vercel CLI (`vercel dev`) or point `VITE_CONTACT_ENDPOINT` at a hosted endpoint.
 
 EmailJS (optional, client-side email sending without opening Gmail):
