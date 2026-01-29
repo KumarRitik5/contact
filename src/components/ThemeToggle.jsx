@@ -1,3 +1,5 @@
+import Icon from './Icon.jsx';
+
 export default function ThemeToggle({ theme, setTheme }) {
   const isDark = theme === 'dark';
 
@@ -9,7 +11,7 @@ export default function ThemeToggle({ theme, setTheme }) {
       aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
       title={isDark ? 'Light mode' : 'Dark mode'}
     >
-      <span aria-hidden="true">{isDark ? '☾' : '☼'}</span>
+      <Icon name={isDark ? 'moon' : 'sun'} />
       <span>{isDark ? 'Dark' : 'Light'}</span>
     </button>
   );
