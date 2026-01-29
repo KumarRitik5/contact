@@ -1,4 +1,5 @@
 import CopyButton from './CopyButton.jsx';
+import Icon from './Icon.jsx';
 
 function pretty(value) {
   if (!value) return '—';
@@ -48,6 +49,7 @@ export default function ContactCard({ contact }) {
               if (!contact.email) e.preventDefault();
             }}
           >
+            <Icon name="mail" />
             Email me
           </a>
           <a
@@ -57,6 +59,7 @@ export default function ContactCard({ contact }) {
               if (!contact.phone) e.preventDefault();
             }}
           >
+            <Icon name="phone" />
             Call
           </a>
         </div>
