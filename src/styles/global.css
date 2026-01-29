@@ -17,6 +17,7 @@
 
   --shadow: 0 28px 75px rgba(0, 0, 0, 0.58);
   --shadow-sm: 0 14px 34px rgba(0, 0, 0, 0.45);
+  --shadow-hover: 0 34px 85px rgba(0, 0, 0, 0.62);
 
   --accent: #d78a3a;     /* copper */
   --accent2: #84ffd6;    /* electric mint */
@@ -26,6 +27,9 @@
   --radius: 18px;
   --radius-sm: 12px;
   --ring: 0 0 0 4px rgba(132, 255, 214, 0.18);
+
+  --grain-opacity: 0.09;
+  --grain-blend: overlay;
 
   --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-body: "Alegreya Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
@@ -48,12 +52,16 @@
 
   --shadow: 0 20px 65px rgba(30, 22, 12, 0.14);
   --shadow-sm: 0 12px 30px rgba(30, 22, 12, 0.12);
+  --shadow-hover: 0 26px 72px rgba(30, 22, 12, 0.16);
 
   --accent: #b85c1a;     /* deeper copper */
   --accent2: #0fbf90;
   --danger: #b4232a;
   --ok: #0b7b5d;
   --ring: 0 0 0 4px rgba(15, 191, 144, 0.18);
+
+  --grain-opacity: 0.06;
+  --grain-blend: soft-light;
 }
 
 * { box-sizing: border-box; }
@@ -62,9 +70,9 @@ body {
   margin: 0;
   color: var(--text);
   background:
-    radial-gradient(900px 520px at 12% 18%, rgba(215, 138, 58, 0.22), transparent 60%),
-    radial-gradient(800px 520px at 88% 22%, rgba(132, 255, 214, 0.14), transparent 62%),
-    radial-gradient(700px 520px at 45% 110%, rgba(215, 138, 58, 0.10), transparent 62%),
+    radial-gradient(900px 520px at 12% 18%, rgba(215, 138, 58, 0.16), transparent 60%),
+    radial-gradient(800px 520px at 88% 22%, rgba(132, 255, 214, 0.10), transparent 62%),
+    radial-gradient(700px 520px at 45% 110%, rgba(215, 138, 58, 0.08), transparent 62%),
     linear-gradient(180deg, var(--bg0), var(--bg1));
   font-family: var(--font-body);
   line-height: 1.5;
@@ -78,13 +86,13 @@ body::after {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.12;
+  opacity: var(--grain-opacity);
   background-image:
     radial-gradient(rgba(255, 255, 255, 0.55) 1px, transparent 1px),
     radial-gradient(rgba(0, 0, 0, 0.35) 1px, transparent 1px);
   background-size: 4px 4px, 6px 6px;
   background-position: 0 0, 1px 2px;
-  mix-blend-mode: overlay;
+  mix-blend-mode: var(--grain-blend);
 }
 
 /* subtle animated gradient sheen */
