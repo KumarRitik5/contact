@@ -3,6 +3,7 @@ import ContactCard from './components/ContactCard.jsx';
 import ContactForm from './components/ContactForm.jsx';
 import Footer from './components/Footer.jsx';
 import Logo from './components/Logo.jsx';
+import Reveal from './components/Reveal.jsx';
 import SocialLinks from './components/SocialLinks.jsx';
 import ThemeToggle from './components/ThemeToggle.jsx';
 import { CONTACT } from './config/contact.js';
@@ -55,12 +56,19 @@ export default function App() {
 
       <main className="container grid">
         <section className="stack stack--sticky">
-          <ContactCard contact={CONTACT} />
-          <SocialLinks links={CONTACT.socialLinks} />
+          <Reveal delayMs={0}>
+            <ContactCard contact={CONTACT} />
+          </Reveal>
+
+          <Reveal delayMs={90}>
+            <SocialLinks links={CONTACT.socialLinks} />
+          </Reveal>
         </section>
 
         <section className="stack" id="message">
-          <ContactForm contact={CONTACT} />
+          <Reveal delayMs={140}>
+            <ContactForm contact={CONTACT} />
+          </Reveal>
         </section>
       </main>
 
