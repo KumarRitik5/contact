@@ -127,6 +127,42 @@ a { color: inherit; }
   margin-top: 14px;
 }
 
+.hero__highlights {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+@media (min-width: 720px) {
+  .hero__highlights {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.highlight {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  box-shadow: var(--shadow-sm);
+  padding: 10px 12px;
+}
+
+.highlight__label {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.highlight__value {
+  margin-top: 2px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 800;
+}
+
 .eyebrow {
   display: inline-flex;
   padding: 6px 10px;
@@ -370,6 +406,26 @@ a { color: inherit; }
 .btn--primary {
   border-color: rgba(110, 231, 255, 0.42);
   background: linear-gradient(90deg, rgba(110, 231, 255, 0.18), rgba(167, 139, 250, 0.18));
+}
+
+/* Social buttons (brand-aware) */
+.btn--social {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.btn--social[data-brand='linkedin'] {
+  border-color: rgba(0, 119, 181, 0.45);
+  background: linear-gradient(90deg, rgba(0, 119, 181, 0.12), rgba(255, 255, 255, 0.03));
+}
+
+.btn--social[data-brand='github'] {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+}
+
+.btn--social[data-brand='email'] {
+  border-color: rgba(110, 231, 255, 0.38);
+  background: linear-gradient(90deg, rgba(110, 231, 255, 0.14), rgba(167, 139, 250, 0.1));
 }
 
 .btn--ghost {
