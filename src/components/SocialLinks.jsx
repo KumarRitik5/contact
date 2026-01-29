@@ -20,18 +20,26 @@ export default function SocialLinks({ links }) {
         <div className="card__title">Social</div>
         <div className="pills">
           {(links || []).map((link) => (
+            (() => {
+              const isInternal = typeof link?.href === 'string' && link.href.startsWith('#');
+              const target = isInternal ? undefined : '_blank';
+              const rel = isInternal ? undefined : 'noreferrer';
+
+              return (
             <a
               key={link.id}
               className="btn pill btn--social"
               data-brand={link.id}
               style={brandStyle(link.id)}
               href={link.href}
-              target="_blank"
-              rel="noreferrer"
+              target={target}
+              rel={rel}
             >
               <SocialIcon id={link.id} />
               {link.label}
             </a>
+              );
+            })()
           ))}
         </div>
       </div>

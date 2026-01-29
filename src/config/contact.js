@@ -34,11 +34,8 @@ export const CONTACT = {
     },
     {
       id: 'email',
-      label: 'Email',
-      href: 'mailto:ritikkumar12bicbly@gmail.com',
+      label: 'Message',
+      href: '#message',
     },
   ],
-
-  // Used for mailto fallback when no endpoint is configured.
-  mailtoTo: 'ritikkumar12bicbly@gmail.com',
 };

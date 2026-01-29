@@ -189,13 +189,9 @@ a { color: inherit; }
     radial-gradient(520px 220px at 88% 40%, rgba(167, 139, 250, 0.12), transparent 62%),
     linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
   filter: blur(14px);
-  opacity: 0.8;
+  opacity: 0.72;
   transform: translate3d(0, 0, 0);
-  animation: barFlow 12s ease-in-out infinite;
-}
-
-.header__ticker {
-  margin-top: 12px;
+  animation: barFlow 20s ease-in-out infinite;
 }
 
 .header__marquee {
@@ -369,16 +365,6 @@ a { color: inherit; }
   display: grid;
   gap: 14px;
 }
-
-/* Stagger (Reveal wrappers) on initial load */
-.stack > .reveal {
-  animation: enterUp 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
-}
-
-.stack > .reveal:nth-child(1) { animation-delay: 60ms; }
-.stack > .reveal:nth-child(2) { animation-delay: 120ms; }
-.stack > .reveal:nth-child(3) { animation-delay: 180ms; }
-.stack > .reveal:nth-child(4) { animation-delay: 240ms; }
 
 @media (min-width: 900px) {
   .stack--sticky {
@@ -902,9 +888,9 @@ svg {
     radial-gradient(520px 230px at 84% 30%, rgba(110, 231, 255, 0.10), transparent 62%),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
   filter: blur(14px);
-  opacity: 0.75;
+  opacity: 0.7;
   transform: translate3d(0, 0, 0);
-  animation: barFlow 14s ease-in-out infinite;
+  animation: barFlow 24s ease-in-out infinite;
 }
 
 .footer__ticker {
@@ -930,6 +916,11 @@ svg {
   width: max-content;
   gap: 18px;
   animation: tickerMove var(--speed, 40s) linear infinite;
+}
+
+.ticker:hover .ticker__track,
+.ticker:focus-within .ticker__track {
+  animation-play-state: paused;
 }
 
 .ticker__group {
@@ -971,7 +962,6 @@ svg {
   }
 
   .hero,
-  .stack > .card,
   .reveal,
   .status--motion {
     animation: none;

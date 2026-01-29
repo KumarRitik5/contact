@@ -61,13 +61,10 @@ export default function ContactCard({ contact }) {
           <div className="pills">
             <a
               className="btn btn--primary pill"
-              href={contact.email ? `mailto:${contact.email}` : '#'}
-              onClick={(e) => {
-                if (!contact.email) e.preventDefault();
-              }}
+              href="#message"
             >
               <Icon name="mail" />
-              Email
+              Message
             </a>
 
             <a
