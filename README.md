@@ -53,6 +53,8 @@ Optional environment variables:
 
 This repo includes a Vercel Serverless Function at `/api/contact` (see `api/contact.js`).
 
+In production, if `VITE_CONTACT_ENDPOINT` is not set, the app will default to sending to `/api/contact`.
+
 1) Create a Resend account + API key
 
 2) In Vercel Project Settings → Environment Variables, add:
