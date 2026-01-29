@@ -19,16 +19,12 @@ export default function App() {
     localStorage.setItem('theme', theme);
   }, [theme]);
 
-  const subtitle = useMemo(() => {
-    return CONTACT.role || CONTACT.tagline || '';
+  const heroTitle = useMemo(() => {
+    return CONTACT.tagline || 'Let’s connect.';
   }, []);
 
-  const highlights = useMemo(() => {
-    const items = [];
-    if (CONTACT.availability) items.push({ label: 'Status', value: CONTACT.availability });
-    if (CONTACT.location) items.push({ label: 'Location', value: CONTACT.location });
-    if (Array.isArray(CONTACT.skills) && CONTACT.skills.length) items.push({ label: 'Stack', value: CONTACT.skills.slice(0, 3).join(' · ') });
-    return items.slice(0, 3);
+  const heroSubtitle = useMemo(() => {
+    return 'Send a message with a bit of detail — I usually reply as soon as I can.';
   }, []);
 
   return (
@@ -45,20 +41,8 @@ export default function App() {
 
         <div className="container hero">
           <div>
-            <div className="eyebrow">Get in touch</div>
-            <h1 className="title">{CONTACT.name}</h1>
-            {subtitle ? <p className="subtitle">{subtitle}</p> : null}
-
-            {highlights.length ? (
-              <div className="hero__highlights" aria-label="Highlights">
-                {highlights.map((h) => (
-                  <div key={h.label} className="highlight">
-                    <div className="highlight__label">{h.label}</div>
-                    <div className="highlight__value">{h.value}</div>
-                  </div>
-                ))}
-              </div>
-            ) : null}
+            <h1 className="title">{heroTitle}</h1>
+            <p className="subtitle">{heroSubtitle}</p>
 
             <div className="hero__actions">
               <a className="btn btn--primary" href="#message">
