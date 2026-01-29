@@ -45,7 +45,9 @@ export default function App() {
             />
           </div>
 
-          <ThemeToggle theme={theme} setTheme={setTheme} />
+          <div className="header__actions">
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+          </div>
         </div>
 
         <div className="container hero">

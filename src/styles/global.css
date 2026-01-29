@@ -205,8 +205,19 @@ a { color: inherit; }
 }
 
 @media (max-width: 720px) {
+  .header__inner {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .header__actions {
+    margin-left: auto;
+  }
+
   .header__marquee {
-    display: none;
+    order: 3;
+    flex: 0 0 100%;
+    margin: 10px 0 0;
   }
 }
 
