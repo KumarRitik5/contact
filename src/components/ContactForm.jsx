@@ -150,7 +150,22 @@ export default function ContactForm({ contact }) {
         });
 
         if (!res.ok) {
-          throw new Error(`Request failed: ${res.status}`);
+          let details = '';
+          try {
+            const data = await res.json();
+            if (data && typeof data === 'object' && typeof data.error === 'string') {
+              details = data.error;
+            }
+          } catch {
+            try {
+              details = await res.text();
+            } catch {
+              // ignore
+            }
+          }
+
+          const msg = details ? `Request failed: ${res.status}. ${details}` : `Request failed: ${res.status}`;
+          throw new Error(msg);
         }
 
         setStatus({ state: 'success', message: 'Message sent successfully. Thanks!' });
