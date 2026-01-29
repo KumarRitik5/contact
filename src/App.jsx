@@ -23,6 +23,14 @@ export default function App() {
     return CONTACT.role || CONTACT.tagline || '';
   }, []);
 
+  const highlights = useMemo(() => {
+    const items = [];
+    if (CONTACT.availability) items.push({ label: 'Status', value: CONTACT.availability });
+    if (CONTACT.location) items.push({ label: 'Location', value: CONTACT.location });
+    if (Array.isArray(CONTACT.skills) && CONTACT.skills.length) items.push({ label: 'Stack', value: CONTACT.skills.slice(0, 3).join(' · ') });
+    return items.slice(0, 3);
+  }, []);
+
   return (
     <div className="page">
       <header className="header">
@@ -40,6 +48,17 @@ export default function App() {
             <div className="eyebrow">Get in touch</div>
             <h1 className="title">{CONTACT.name}</h1>
             {subtitle ? <p className="subtitle">{subtitle}</p> : null}
+
+            {highlights.length ? (
+              <div className="hero__highlights" aria-label="Highlights">
+                {highlights.map((h) => (
+                  <div key={h.label} className="highlight">
+                    <div className="highlight__label">{h.label}</div>
+                    <div className="highlight__value">{h.value}</div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
 
             <div className="hero__actions">
               <a className="btn btn--primary" href="#message">
