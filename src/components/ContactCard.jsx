@@ -1,5 +1,16 @@
 import CopyButton from './CopyButton.jsx';
 import Icon from './Icon.jsx';
+import VCardButton from './VCardButton.jsx';
+
+function initials(name) {
+  const parts = String(name || '')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+  const first = parts[0]?.[0] ?? 'R';
+  const last = parts.length > 1 ? parts[parts.length - 1][0] : '';
+  return (first + last).toUpperCase();
+}
 
 function pretty(value) {
   if (!value) return '—';
@@ -10,58 +21,89 @@ export default function ContactCard({ contact }) {
   return (
     <div className="card">
       <div className="card__inner">
-        <div className="card__title">Contact Details</div>
-        <div className="kv">
-          <div className="kv__row">
-            <div className="kv__label">Name</div>
-            <div className="kv__value">{pretty(contact.name)}</div>
-          </div>
+        <div className="profile">
+          <div className="profile__head">
+            <div className="profile__avatar" aria-hidden="true">{initials(contact.name)}</div>
 
-          <div className="kv__row">
-            <div className="kv__label">Email</div>
-            <div className="row">
-              <div className="kv__value">{pretty(contact.email)}</div>
-              {contact.email ? <CopyButton value={contact.email} label="Copy email" /> : null}
+            <div className="profile__main">
+              <div className="profile__name">{pretty(contact.name)}</div>
+              {contact.role ? <div className="profile__role">{contact.role}</div> : null}
+              {contact.availability ? <div className="profile__badge">{contact.availability}</div> : null}
             </div>
           </div>
 
-          <div className="kv__row">
-            <div className="kv__label">Phone</div>
-            <div className="row">
-              <div className="kv__value">{pretty(contact.phone)}</div>
-              {contact.phone ? <CopyButton value={contact.phone} label="Copy phone" /> : null}
+          {contact.bio ? <p className="profile__bio">{contact.bio}</p> : null}
+
+          <div className="kv kv--compact" aria-label="Quick facts">
+            <div className="kv__row">
+              <div className="kv__label">Email</div>
+              <div className="row">
+                <div className="kv__value">{pretty(contact.email)}</div>
+                {contact.email ? <CopyButton value={contact.email} label="Copy" /> : null}
+              </div>
+            </div>
+
+            <div className="kv__row">
+              <div className="kv__label">Phone</div>
+              <div className="row">
+                <div className="kv__value">{pretty(contact.phone)}</div>
+                {contact.phone ? <CopyButton value={contact.phone} label="Copy" /> : null}
+              </div>
+            </div>
+
+            <div className="kv__row">
+              <div className="kv__label">Location</div>
+              <div className="kv__value">{pretty(contact.location)}</div>
             </div>
           </div>
 
-          <div className="kv__row">
-            <div className="kv__label">Location</div>
-            <div className="kv__value">{pretty(contact.location)}</div>
+          <div style={{ height: 12 }} />
+
+          <div className="pills">
+            <a
+              className="btn btn--primary pill"
+              href={contact.email ? `mailto:${contact.email}` : '#'}
+              onClick={(e) => {
+                if (!contact.email) e.preventDefault();
+              }}
+            >
+              <Icon name="mail" />
+              Email
+            </a>
+
+            <a
+              className="btn pill"
+              href={contact.phone ? `tel:${contact.phone}` : '#'}
+              onClick={(e) => {
+                if (!contact.phone) e.preventDefault();
+              }}
+            >
+              <Icon name="phone" />
+              Call
+            </a>
+
+            <VCardButton contact={contact} className="btn pill" />
           </div>
-        </div>
 
-        <div style={{ height: 12 }} />
-
-        <div className="pills">
-          <a
-            className="btn btn--primary pill"
-            href={contact.email ? `mailto:${contact.email}` : '#'}
-            onClick={(e) => {
-              if (!contact.email) e.preventDefault();
-            }}
-          >
-            <Icon name="mail" />
-            Email me
-          </a>
-          <a
-            className="btn pill"
-            href={contact.phone ? `tel:${contact.phone}` : '#'}
-            onClick={(e) => {
-              if (!contact.phone) e.preventDefault();
-            }}
-          >
-            <Icon name="phone" />
-            Call
-          </a>
+          {(contact.website || contact.github || contact.resumeUrl) ? (
+            <div style={{ marginTop: 10 }} className="hint">
+              {contact.website ? (
+                <span>
+                  Website: <a href={contact.website} target="_blank" rel="noreferrer">{contact.website}</a>{'  '}
+                </span>
+              ) : null}
+              {contact.github ? (
+                <span>
+                  GitHub: <a href={contact.github} target="_blank" rel="noreferrer">{contact.github}</a>{'  '}
+                </span>
+              ) : null}
+              {contact.resumeUrl ? (
+                <span>
+                  Resume: <a href={contact.resumeUrl} target="_blank" rel="noreferrer">open</a>
+                </span>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
