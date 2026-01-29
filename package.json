@@ -10,8 +10,10 @@
     "generate-icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "resend": "^4.1.2"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",

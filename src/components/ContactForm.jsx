@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import emailjs from '@emailjs/browser';
 
 const STORAGE_KEY = 'contact_form_draft_v1';
 
@@ -47,6 +48,11 @@ function clearDraft() {
 
 export default function ContactForm({ contact }) {
   const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
+  const emailjsServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+  const emailjsTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+  const emailjsPublicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+  const hasEmailjs = Boolean(emailjsServiceId && emailjsTemplateId && emailjsPublicKey);
 
   const [values, setValues] = useState(() => {
     const draft = draftFromStorage();
@@ -133,6 +139,8 @@ export default function ContactForm({ contact }) {
       company: values.company.trim(),
       topic: values.topic,
       message: values.message.trim(),
+      consent: values.consent,
+      website: values.website,
       meta: {
         userAgent: navigator.userAgent,
         timestamp: new Date().toISOString(),
@@ -152,12 +160,28 @@ export default function ContactForm({ contact }) {
         }
 
         setStatus({ state: 'success', message: 'Message sent successfully. Thanks!' });
+      } else if (hasEmailjs) {
+        await emailjs.send(
+          emailjsServiceId,
+          emailjsTemplateId,
+          {
+            from_name: payload.name,
+            reply_to: payload.email,
+            company: payload.company || '—',
+            topic: payload.topic,
+            message: payload.message,
+          },
+          emailjsPublicKey
+        );
+
+        setStatus({ state: 'success', message: 'Message sent successfully. Thanks!' });
       } else {
         const to = contact.mailtoTo || contact.email;
         if (!to) {
           setStatus({
             state: 'error',
-            message: 'No endpoint configured and no email available for mailto fallback. Set CONTACT.email or CONTACT.mailtoTo.',
+            message:
+              'No send method configured. Set VITE_CONTACT_ENDPOINT, or configure EmailJS (VITE_EMAILJS_*), or set CONTACT.email / CONTACT.mailtoTo for mailto fallback.',
           });
           return;
         }
