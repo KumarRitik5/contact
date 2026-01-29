@@ -1,5 +1,6 @@
 import CopyButton from './CopyButton.jsx';
 import VCardButton from './VCardButton.jsx';
+import Icon from './Icon.jsx';
 
 function initials(name) {
   const parts = String(name || '')
@@ -74,6 +75,7 @@ export default function BusinessCard({ contact }) {
               if (!contact.email) e.preventDefault();
             }}
           >
+            <Icon name="mail" />
             Email
           </a>
 
@@ -84,12 +86,14 @@ export default function BusinessCard({ contact }) {
               if (!contact.phone) e.preventDefault();
             }}
           >
+            <Icon name="phone" />
             Call
           </a>
 
           <VCardButton contact={contact} className="btn pill" />
 
           <button type="button" className="btn pill" onClick={() => window.print()}>
+            <Icon name="print" />
             Print
           </button>
         </div>
