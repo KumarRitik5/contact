@@ -41,7 +41,8 @@ export default function App() {
           <div className="header__marquee">
             <Ticker
               text="Open to opportunities • Fast replies • Clean, modern builds"
-              speedSeconds={55}
+              speedSeconds={75}
+              className="ticker--header"
             />
           </div>
 

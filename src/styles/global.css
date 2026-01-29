@@ -206,8 +206,22 @@ a { color: inherit; }
 
 @media (max-width: 720px) {
   .header__inner {
-    flex-wrap: wrap;
     align-items: center;
+  }
+
+  .header__actions {
+    margin-left: 0;
+  }
+
+  .header__marquee {
+    margin: 0 10px;
+  }
+}
+
+/* Very small phones: wrap ticker under to avoid crowding */
+@media (max-width: 520px) {
+  .header__inner {
+    flex-wrap: wrap;
   }
 
   .header__actions {
@@ -219,6 +233,15 @@ a { color: inherit; }
     flex: 0 0 100%;
     margin: 10px 0 0;
   }
+}
+
+.ticker--header .ticker__mask {
+  padding: 8px 10px;
+}
+
+.ticker--header .ticker__item {
+  font-size: 10px;
+  letter-spacing: 0.16em;
 }
 
 .header__inner {

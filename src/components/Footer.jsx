@@ -17,7 +17,7 @@ export default function Footer({ contact }) {
       </div>
 
       <div className="container container--edge footer__ticker">
-        <Ticker text="Thanks for visiting • Connect on LinkedIn • Message anytime" speedSeconds={65} />
+        <Ticker text="Thanks for visiting • Connect on LinkedIn • Message anytime" speedSeconds={90} />
       </div>
     </footer>
   );
