@@ -198,6 +198,18 @@ a { color: inherit; }
   margin-top: 12px;
 }
 
+.header__marquee {
+  flex: 1;
+  min-width: 0;
+  margin: 0 12px;
+}
+
+@media (max-width: 720px) {
+  .header__marquee {
+    display: none;
+  }
+}
+
 .header__inner {
   display: flex;
   align-items: flex-start;
@@ -883,7 +895,7 @@ svg {
   display: flex;
   width: max-content;
   gap: 18px;
-  animation: tickerMove 22s linear infinite;
+  animation: tickerMove var(--speed, 40s) linear infinite;
 }
 
 .ticker__group {
