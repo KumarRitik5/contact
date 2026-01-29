@@ -149,12 +149,23 @@ export default function ContactForm({ contact }) {
           body: JSON.stringify(payload),
         });
 
+        let responseBody = null;
+        try {
+          responseBody = await res.json();
+        } catch {
+          // Non-JSON response; ignore.
+        }
+
         if (!res.ok) {
           let details = '';
+          let retryAfterSeconds = null;
           try {
-            const data = await res.json();
+            const data = responseBody;
             if (data && typeof data === 'object' && typeof data.error === 'string') {
               details = data.error;
+            }
+            if (data && typeof data === 'object' && typeof data.retryAfterSeconds === 'number') {
+              retryAfterSeconds = data.retryAfterSeconds;
             }
           } catch {
             try {
@@ -164,11 +175,19 @@ export default function ContactForm({ contact }) {
             }
           }
 
+          if (retryAfterSeconds && Number.isFinite(retryAfterSeconds)) {
+            details = details ? `${details} Try again in ${retryAfterSeconds}s.` : `Try again in ${retryAfterSeconds}s.`;
+          }
+
           const msg = details ? `Request failed: ${res.status}. ${details}` : `Request failed: ${res.status}`;
           throw new Error(msg);
         }
 
-        setStatus({ state: 'success', message: 'Message sent successfully. Thanks!' });
+        const id = responseBody && typeof responseBody === 'object' ? responseBody.id : null;
+        setStatus({
+          state: 'success',
+          message: id ? `Message sent successfully. Thanks! (id: ${id})` : 'Message sent successfully. Thanks!',
+        });
       } else if (hasEmailjs) {
         await emailjs.send(
           emailjsServiceId,
