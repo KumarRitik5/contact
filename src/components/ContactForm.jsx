@@ -68,7 +68,7 @@ export default function ContactForm({ contact }) {
   });
 
   const [touched, setTouched] = useState({});
-  const [status, setStatus] = useState({ state: 'idle', message: '' });
+  const [status, setStatus] = useState({ state: 'idle', message: '', meta: null });
   const maxMessage = 1000;
 
   useEffect(() => {
@@ -248,7 +248,8 @@ export default function ContactForm({ contact }) {
         const id = responseBody && typeof responseBody === 'object' ? responseBody.id : null;
         setStatus({
           state: 'success',
-          message: id ? `Message sent successfully. Thanks! (id: ${id})` : 'Message sent successfully. Thanks!',
+          message: 'Message sent successfully. Thanks!',
+          meta: id ? { id } : null,
         });
       } else if (hasEmailjs) {
         await emailjs.send(
@@ -264,11 +265,12 @@ export default function ContactForm({ contact }) {
           emailjsPublicKey
         );
 
-        setStatus({ state: 'success', message: 'Message sent successfully. Thanks!' });
+        setStatus({ state: 'success', message: 'Message sent successfully. Thanks!', meta: null });
       } else {
         setStatus({
           state: 'error',
           message: 'Message sending is not configured. Set VITE_CONTACT_ENDPOINT (recommended on Vercel) or configure EmailJS (VITE_EMAILJS_*).',
+          meta: null,
         });
         return;
       }
@@ -288,6 +290,7 @@ export default function ContactForm({ contact }) {
       setStatus({
         state: 'error',
         message: `Could not send. ${err instanceof Error ? err.message : 'Unknown error'}`,
+        meta: null,
       });
     }
   }
@@ -420,7 +423,7 @@ export default function ContactForm({ contact }) {
                 clearDraft();
                 setValues({ name: '', email: '', company: '', topic: 'Collaboration', message: '', consent: false, website: '' });
                 setTouched({});
-                setStatus({ state: 'idle', message: '' });
+                setStatus({ state: 'idle', message: '', meta: null });
                 setTurnstileToken('');
                 try {
                   if (hasTurnstile && window.turnstile && turnstileWidgetIdRef.current) {
@@ -442,6 +445,14 @@ export default function ContactForm({ contact }) {
               aria-live="polite"
             >
               {status.message}
+              {status.state === 'success' && status.meta?.id ? (
+                <details style={{ marginTop: 8 }}>
+                  <summary style={{ cursor: 'pointer' }}>Details</summary>
+                  <div className="hint" style={{ marginTop: 6 }}>
+                    id: {status.meta.id}
+                  </div>
+                </details>
+              ) : null}
             </div>
           ) : null}
         </form>
