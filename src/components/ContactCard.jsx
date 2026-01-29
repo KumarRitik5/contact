@@ -86,21 +86,24 @@ export default function ContactCard({ contact }) {
           </div>
 
           {(contact.website || contact.github || contact.resumeUrl) ? (
-            <div style={{ marginTop: 10 }} className="hint">
+            <div className="linkRow" aria-label="Links">
               {contact.website ? (
-                <span>
-                  Website: <a href={contact.website} target="_blank" rel="noreferrer">{contact.website}</a>{'  '}
-                </span>
+                <a className="linkChip" href={contact.website} target="_blank" rel="noreferrer">
+                  <Icon name="link" />
+                  Website
+                </a>
               ) : null}
               {contact.github ? (
-                <span>
-                  GitHub: <a href={contact.github} target="_blank" rel="noreferrer">{contact.github}</a>{'  '}
-                </span>
+                <a className="linkChip" href={contact.github} target="_blank" rel="noreferrer">
+                  <Icon name="github" />
+                  GitHub
+                </a>
               ) : null}
               {contact.resumeUrl ? (
-                <span>
-                  Resume: <a href={contact.resumeUrl} target="_blank" rel="noreferrer">open</a>
-                </span>
+                <a className="linkChip" href={contact.resumeUrl} target="_blank" rel="noreferrer">
+                  <Icon name="file" />
+                  Resume
+                </a>
               ) : null}
             </div>
           ) : null}
