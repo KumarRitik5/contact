@@ -31,7 +31,7 @@ export default function CopyButton({ value, label, disabled = false }) {
   }
 
   return (
-    <button type="button" className="btn" onClick={onCopy} disabled={disabled}>
+    <button type="button" className="btn btn--sm" onClick={onCopy} disabled={disabled}>
       <Icon name={copied ? 'check' : 'copy'} />
       {copied ? 'Copied' : label}
     </button>

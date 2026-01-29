@@ -127,6 +127,12 @@ a { color: inherit; }
   gap: 16px;
 }
 
+@media (max-width: 520px) {
+  .header__inner {
+    align-items: center;
+  }
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
@@ -309,7 +315,25 @@ a { color: inherit; }
   font-weight: 600;
   font-size: 13px;
   text-align: right;
+  min-width: 0;
+  overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+@media (max-width: 520px) {
+  .kv__row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .kv__value {
+    text-align: left;
+  }
+
+  .kv__row .row {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
 }
 
 .row {
@@ -498,6 +522,12 @@ a { color: inherit; }
   transition: transform 140ms ease, background 140ms ease, border-color 140ms ease, box-shadow 140ms ease;
 }
 
+.btn--sm {
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+
 .btn svg {
   opacity: 0.95;
 }
@@ -614,6 +644,28 @@ a { color: inherit; }
 .textarea {
   min-height: 140px;
   resize: vertical;
+}
+
+@media (max-width: 420px) {
+  .textarea {
+    min-height: 120px;
+  }
+}
+
+/* Turnstile container safety for narrow screens */
+.turnstile {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.turnstile > div {
+  width: fit-content;
+}
+
+@media (max-width: 420px) {
+  .themeToggle__text {
+    display: none;
+  }
 }
 
 /* Third-party widgets should never overflow */

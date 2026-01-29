@@ -12,7 +12,7 @@ export default function ThemeToggle({ theme, setTheme }) {
       title={isDark ? 'Light mode' : 'Dark mode'}
     >
       <Icon name={isDark ? 'moon' : 'sun'} />
-      <span>{isDark ? 'Dark' : 'Light'}</span>
+      <span className="themeToggle__text">{isDark ? 'Dark' : 'Light'}</span>
     </button>
   );
 }

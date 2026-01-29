@@ -398,7 +398,9 @@ export default function ContactForm({ contact }) {
           {hasTurnstile ? (
             <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
               <div>
-                <div ref={turnstileRef} />
+                <div className="turnstile">
+                  <div ref={turnstileRef} />
+                </div>
                 {showError('turnstile') ? <div className="error">{errors.turnstile}</div> : null}
               </div>
               <div className="hint" style={{ maxWidth: 280 }}>
