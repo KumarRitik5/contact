@@ -442,7 +442,7 @@ export default function ContactForm({ contact }) {
 
           {status.state !== 'idle' ? (
             <div
-              className={`status ${status.state === 'success' ? 'status--ok' : ''} ${status.state === 'error' ? 'status--bad' : ''}`}
+              className={`status status--motion ${status.state === 'success' ? 'status--ok' : ''} ${status.state === 'error' ? 'status--bad' : ''}`}
               role="status"
               aria-live="polite"
             >
