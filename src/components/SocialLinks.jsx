@@ -22,7 +22,8 @@ export default function SocialLinks({ links }) {
           {links.map((link) => (
             <a
               key={link.id}
-              className="btn pill"
+              className="btn pill btn--social"
+              data-brand={link.id}
               style={brandStyle(link.id)}
               href={link.href}
               target="_blank"
