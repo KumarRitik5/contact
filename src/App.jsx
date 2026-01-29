@@ -48,11 +48,6 @@ export default function App() {
               <a className="btn btn--primary" href="#message">
                 Send a message
               </a>
-              {CONTACT.github ? (
-                <a className="btn" href={CONTACT.github} target="_blank" rel="noreferrer">
-                  View GitHub
-                </a>
-              ) : null}
             </div>
           </div>
         </div>

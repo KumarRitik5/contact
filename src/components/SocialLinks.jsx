@@ -14,12 +14,14 @@ function brandStyle(id) {
 }
 
 export default function SocialLinks({ links }) {
+  const visibleLinks = (links || []).filter((l) => l?.id !== 'github');
+
   return (
     <div className="card">
       <div className="card__inner">
         <div className="card__title">Social</div>
         <div className="pills">
-          {links.map((link) => (
+          {visibleLinks.map((link) => (
             <a
               key={link.id}
               className="btn pill btn--social"

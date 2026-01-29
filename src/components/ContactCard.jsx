@@ -1,6 +1,5 @@
 import CopyButton from './CopyButton.jsx';
 import Icon from './Icon.jsx';
-import VCardButton from './VCardButton.jsx';
 
 function initials(name) {
   const parts = String(name || '')
@@ -82,7 +81,6 @@ export default function ContactCard({ contact }) {
               Call
             </a>
 
-            <VCardButton contact={contact} className="btn pill" />
           </div>
 
           {(contact.website || contact.github || contact.resumeUrl) ? (
@@ -91,12 +89,6 @@ export default function ContactCard({ contact }) {
                 <a className="linkChip" href={contact.website} target="_blank" rel="noreferrer">
                   <Icon name="link" />
                   Website
-                </a>
-              ) : null}
-              {contact.github ? (
-                <a className="linkChip" href={contact.github} target="_blank" rel="noreferrer">
-                  <Icon name="github" />
-                  GitHub
                 </a>
               ) : null}
               {contact.resumeUrl ? (
