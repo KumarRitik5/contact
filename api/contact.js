@@ -7,6 +7,45 @@ function isEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
+const rateLimitStore = new Map();
+
+function getClientIp(req) {
+  const xff = req.headers['x-forwarded-for'];
+  if (typeof xff === 'string' && xff.trim()) {
+    return xff.split(',')[0].trim();
+  }
+  if (Array.isArray(xff) && xff.length > 0) {
+    return String(xff[0]).split(',')[0].trim();
+  }
+  return req.socket?.remoteAddress || 'unknown';
+}
+
+function parsePositiveInt(value, fallback) {
+  const n = Number.parseInt(String(value ?? ''), 10);
+  return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+function checkRateLimit(ip, { windowSeconds, max }) {
+  const now = Date.now();
+  const windowMs = windowSeconds * 1000;
+
+  const entry = rateLimitStore.get(ip);
+  if (!entry || now >= entry.resetAt) {
+    rateLimitStore.set(ip, { count: 1, resetAt: now + windowMs });
+    return { allowed: true, retryAfterSeconds: 0 };
+  }
+
+  if (entry.count >= max) {
+    return {
+      allowed: false,
+      retryAfterSeconds: Math.max(1, Math.ceil((entry.resetAt - now) / 1000)),
+    };
+  }
+
+  entry.count += 1;
+  return { allowed: true, retryAfterSeconds: 0 };
+}
+
 async function readJsonBody(req) {
   if (req.body && typeof req.body === 'object') return req.body;
 
@@ -34,6 +73,20 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ ok: false, error: 'Method not allowed' });
+  }
+
+  // Best-effort rate limiting (per serverless instance). For stronger protection, back this with Redis/KV.
+  const rateLimitWindowSeconds = parsePositiveInt(process.env.RATE_LIMIT_WINDOW_SECONDS, 10 * 60);
+  const rateLimitMax = parsePositiveInt(process.env.RATE_LIMIT_MAX, 5);
+  const ip = getClientIp(req);
+  const rl = checkRateLimit(ip, { windowSeconds: rateLimitWindowSeconds, max: rateLimitMax });
+  if (!rl.allowed) {
+    res.setHeader('Retry-After', String(rl.retryAfterSeconds));
+    return res.status(429).json({
+      ok: false,
+      error: 'Too many requests. Please try again soon.',
+      retryAfterSeconds: rl.retryAfterSeconds,
+    });
   }
 
   const resendApiKey = process.env.RESEND_API_KEY;
@@ -64,7 +117,7 @@ export default async function handler(req, res) {
 
   // Honeypot (spam bots)
   if (isNonEmptyString(website)) {
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, ignored: true });
   }
 
   // Basic validation
@@ -97,7 +150,7 @@ export default async function handler(req, res) {
     const { Resend } = await import('resend');
     const resend = new Resend(resendApiKey);
 
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: fromEmail,
       to: [toEmail],
       subject,
@@ -105,7 +158,11 @@ export default async function handler(req, res) {
       replyTo: email.trim(),
     });
 
-    return res.status(200).json({ ok: true });
+    if (result?.error) {
+      throw new Error(result.error.message || 'Resend error');
+    }
+
+    return res.status(200).json({ ok: true, id: result?.data?.id, receivedAt: new Date().toISOString() });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     return res.status(500).json({ ok: false, error: `Email send failed. ${message}` });
