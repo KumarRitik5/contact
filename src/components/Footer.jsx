@@ -1,4 +1,5 @@
 import Logo from './Logo.jsx';
+import Ticker from './Ticker.jsx';
 
 export default function Footer({ contact }) {
   const year = new Date().getFullYear();
@@ -13,6 +14,10 @@ export default function Footer({ contact }) {
         </div>
 
         <div>© {year} · Built by {builderName}</div>
+      </div>
+
+      <div className="container container--edge footer__ticker">
+        <Ticker text="Thanks for visiting • Connect on LinkedIn • Message anytime" />
       </div>
     </footer>
   );
