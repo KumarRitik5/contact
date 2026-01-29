@@ -69,6 +69,13 @@ Optional (basic spam protection):
 - `RATE_LIMIT_WINDOW_SECONDS` (default: 600)
 - `RATE_LIMIT_MAX` (default: 5)
 
+Optional (stronger spam protection): Cloudflare Turnstile
+
+- `VITE_TURNSTILE_SITE_KEY` (client)
+- `TURNSTILE_SECRET_KEY` (server)
+
+When `TURNSTILE_SECRET_KEY` is set, the API requires a valid Turnstile token.
+
 Note: this rate limit is best-effort (in-memory per serverless instance). For stronger rate limiting across all instances, use a shared store like Vercel KV/Upstash.
 
 Local note: Vite's `npm run dev` will not run Vercel functions. For local end-to-end testing, use Vercel CLI (`vercel dev`) or point `VITE_CONTACT_ENDPOINT` at a hosted endpoint.

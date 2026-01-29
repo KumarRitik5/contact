@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import emailjs from '@emailjs/browser';
 
 const STORAGE_KEY = 'contact_form_draft_v1';
@@ -45,8 +45,14 @@ export default function ContactForm({ contact }) {
   const emailjsServiceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
   const emailjsTemplateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
   const emailjsPublicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+  const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
   const hasEmailjs = Boolean(emailjsServiceId && emailjsTemplateId && emailjsPublicKey);
+  const hasTurnstile = Boolean(turnstileSiteKey);
+
+  const turnstileRef = useRef(null);
+  const turnstileWidgetIdRef = useRef(null);
+  const [turnstileToken, setTurnstileToken] = useState('');
 
   const [values, setValues] = useState(() => {
     const draft = draftFromStorage();
@@ -93,8 +99,63 @@ export default function ContactForm({ contact }) {
 
     if (!values.consent) e.consent = 'Please confirm you agree to be contacted.';
 
+    if (hasTurnstile && !turnstileToken) e.turnstile = 'Please complete the verification.';
+
     return e;
-  }, [values]);
+  }, [values, hasTurnstile, turnstileToken]);
+
+  useEffect(() => {
+    if (!hasTurnstile) return;
+
+    let cancelled = false;
+
+    function ensureScript() {
+      if (window.turnstile) return;
+
+      const existing = document.querySelector('script[data-turnstile="true"]');
+      if (existing) return;
+
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.dataset.turnstile = 'true';
+      document.head.appendChild(script);
+    }
+
+    function tryRender() {
+      if (cancelled) return;
+      if (!turnstileRef.current) return;
+      if (!window.turnstile) return;
+      if (turnstileWidgetIdRef.current) return;
+
+      turnstileWidgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+        sitekey: turnstileSiteKey,
+        callback: (token) => {
+          setTurnstileToken(typeof token === 'string' ? token : '');
+        },
+        'expired-callback': () => setTurnstileToken(''),
+        'error-callback': () => setTurnstileToken(''),
+      });
+    }
+
+    ensureScript();
+    const interval = window.setInterval(tryRender, 200);
+    tryRender();
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+      try {
+        if (window.turnstile && turnstileWidgetIdRef.current) {
+          window.turnstile.remove(turnstileWidgetIdRef.current);
+        }
+      } catch {
+        // ignore
+      }
+      turnstileWidgetIdRef.current = null;
+    };
+  }, [hasTurnstile, turnstileSiteKey]);
 
   const canSubmit = Object.keys(errors).length === 0 && status.state !== 'submitting';
 
@@ -135,6 +196,7 @@ export default function ContactForm({ contact }) {
       message: values.message.trim(),
       consent: values.consent,
       website: values.website,
+      turnstileToken: hasTurnstile ? turnstileToken : undefined,
       meta: {
         userAgent: navigator.userAgent,
         timestamp: new Date().toISOString(),
@@ -214,6 +276,14 @@ export default function ContactForm({ contact }) {
       clearDraft();
       setValues({ name: '', email: '', company: '', topic: 'Collaboration', message: '', consent: false, website: '' });
       setTouched({});
+      setTurnstileToken('');
+      try {
+        if (hasTurnstile && window.turnstile && turnstileWidgetIdRef.current) {
+          window.turnstile.reset(turnstileWidgetIdRef.current);
+        }
+      } catch {
+        // ignore
+      }
     } catch (err) {
       setStatus({
         state: 'error',
@@ -322,6 +392,18 @@ export default function ContactForm({ contact }) {
             {showError('consent') ? <div className="error">{errors.consent}</div> : null}
           </label>
 
+          {hasTurnstile ? (
+            <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <div ref={turnstileRef} />
+                {showError('turnstile') ? <div className="error">{errors.turnstile}</div> : null}
+              </div>
+              <div className="hint" style={{ maxWidth: 280 }}>
+                This helps block spam.
+              </div>
+            </div>
+          ) : null}
+
           <label className="srOnly" aria-hidden="true">
             Website
             <input tabIndex={-1} value={values.website} onChange={(e) => setField('website', e.target.value)} />
@@ -339,6 +421,14 @@ export default function ContactForm({ contact }) {
                 setValues({ name: '', email: '', company: '', topic: 'Collaboration', message: '', consent: false, website: '' });
                 setTouched({});
                 setStatus({ state: 'idle', message: '' });
+                setTurnstileToken('');
+                try {
+                  if (hasTurnstile && window.turnstile && turnstileWidgetIdRef.current) {
+                    window.turnstile.reset(turnstileWidgetIdRef.current);
+                  }
+                } catch {
+                  // ignore
+                }
               }}
             >
               Clear

@@ -7,6 +7,34 @@ function isEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
+async function verifyTurnstile({ secret, token, remoteip }) {
+  const body = new URLSearchParams();
+  body.set('secret', secret);
+  body.set('response', token);
+  if (remoteip) body.set('remoteip', remoteip);
+
+  const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body,
+  });
+
+  if (!res.ok) {
+    return { ok: false, error: `Turnstile verify failed: ${res.status}` };
+  }
+
+  const data = await res.json();
+  if (!data || typeof data !== 'object') {
+    return { ok: false, error: 'Turnstile verify failed: invalid response' };
+  }
+
+  if (data.success !== true) {
+    return { ok: false, error: 'Turnstile verification failed.' };
+  }
+
+  return { ok: true };
+}
+
 const rateLimitStore = new Map();
 
 function getClientIp(req) {
@@ -92,6 +120,7 @@ export default async function handler(req, res) {
   const resendApiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.CONTACT_TO_EMAIL;
   const fromEmail = process.env.CONTACT_FROM_EMAIL || 'onboarding@resend.dev';
+  const turnstileSecretKey = process.env.TURNSTILE_SECRET_KEY;
 
   if (!resendApiKey || !toEmail) {
     return res.status(500).json({
@@ -113,11 +142,27 @@ export default async function handler(req, res) {
     message,
     consent,
     website,
+    turnstileToken,
   } = payload;
 
   // Honeypot (spam bots)
   if (isNonEmptyString(website)) {
     return res.status(200).json({ ok: true, ignored: true });
+  }
+
+  if (turnstileSecretKey) {
+    if (!isNonEmptyString(turnstileToken)) {
+      return res.status(400).json({ ok: false, error: 'Verification required.' });
+    }
+
+    const v = await verifyTurnstile({
+      secret: turnstileSecretKey,
+      token: String(turnstileToken),
+      remoteip: ip !== 'unknown' ? ip : '',
+    });
+    if (!v.ok) {
+      return res.status(400).json({ ok: false, error: v.error || 'Verification failed.' });
+    }
   }
 
   // Basic validation
