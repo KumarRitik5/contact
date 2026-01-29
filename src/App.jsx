@@ -30,7 +30,7 @@ export default function App() {
   return (
     <div className="page">
       <header className="header">
-        <div className="container header__inner">
+        <div className="container container--edge header__inner">
           <div className="brand" aria-label="Site brand">
             <Logo size={20} className="brand__logo" title="Contact" />
             <div className="brand__text">Contact</div>

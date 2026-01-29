@@ -6,7 +6,7 @@ export default function Footer({ contact }) {
 
   return (
     <footer className="footer">
-      <div className="container footer__inner">
+      <div className="container container--edge footer__inner">
         <div className="footer__brand" aria-label="App logo">
           <Logo size={18} className="footer__logo" title="Contact" />
           <span className="footer__brandText">Contact</span>

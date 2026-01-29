@@ -81,10 +81,20 @@ a { color: inherit; }
   margin: 0 auto;
 }
 
+/* Use for sections that should reach the screen edges (header/footer) */
+.container--edge {
+  width: calc(100% - 32px);
+  max-width: none;
+}
+
 /* Small phones */
 @media (max-width: 420px) {
   .container {
     width: min(1120px, calc(100% - 24px));
+  }
+
+  .container--edge {
+    width: calc(100% - 24px);
   }
 
   .card__inner {
