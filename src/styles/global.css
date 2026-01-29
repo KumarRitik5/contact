@@ -900,12 +900,42 @@ svg {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.02);
   border-radius: 14px;
+  transform: translateZ(0);
 }
 
 .ticker__mask {
   overflow: hidden;
   padding: 9px 10px;
-  mask-image: linear-gradient(to right, transparent, black 9%, black 91%, transparent);
+  position: relative;
+}
+
+.ticker__mask::before,
+.ticker__mask::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 44px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ticker__mask::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.45), transparent);
+}
+
+.ticker__mask::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.45), transparent);
+}
+
+:root[data-theme='light'] .ticker__mask::before {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.85), transparent);
+}
+
+:root[data-theme='light'] .ticker__mask::after {
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.85), transparent);
 }
 
 .ticker__track {
@@ -913,6 +943,9 @@ svg {
   width: max-content;
   gap: 18px;
   animation: tickerMove var(--speed, 40s) linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .ticker__group {
@@ -940,8 +973,9 @@ svg {
     animation: none;
   }
 
-  .ticker__mask {
-    mask-image: none;
+  .ticker__mask::before,
+  .ticker__mask::after {
+    display: none;
   }
 
   .ticker__track {
