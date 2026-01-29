@@ -1,3 +1,5 @@
+import Icon from './Icon.jsx';
+
 function esc(v) {
   return String(v ?? '')
     .replace(/\\/g, '\\\\')
@@ -50,6 +52,7 @@ export default function VCardButton({ contact, className = 'btn' }) {
 
   return (
     <button type="button" className={className} onClick={download} disabled={disabled}>
+      <Icon name="download" />
       Download vCard
     </button>
   );
