@@ -12,12 +12,6 @@ function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
 }
 
-function buildMailto({ to, subject, body }) {
-  const s = encodeURIComponent(subject);
-  const b = encodeURIComponent(body);
-  return `mailto:${to}?subject=${s}&body=${b}`;
-}
-
 function draftFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -176,31 +170,11 @@ export default function ContactForm({ contact }) {
 
         setStatus({ state: 'success', message: 'Message sent successfully. Thanks!' });
       } else {
-        const to = contact.mailtoTo || contact.email;
-        if (!to) {
-          setStatus({
-            state: 'error',
-            message:
-              'No send method configured. Set VITE_CONTACT_ENDPOINT, or configure EmailJS (VITE_EMAILJS_*), or set CONTACT.email / CONTACT.mailtoTo for mailto fallback.',
-          });
-          return;
-        }
-
-        const subject = `[${payload.topic}] Message from ${payload.name}`;
-        const body =
-          `${payload.message}\n\n` +
-          `—\n` +
-          `From: ${payload.name}\n` +
-          `Email: ${payload.email}\n` +
-          (payload.company ? `Company: ${payload.company}\n` : '');
-
-        const mailto = buildMailto({ to, subject, body });
-        window.location.href = mailto;
-
         setStatus({
-          state: 'success',
-          message: 'Opening your email app with a prefilled message…',
+          state: 'error',
+          message: 'Message sending is not configured. Set VITE_CONTACT_ENDPOINT (recommended on Vercel) or configure EmailJS (VITE_EMAILJS_*).',
         });
+        return;
       }
 
       clearDraft();

@@ -11,7 +11,7 @@ A modern, responsive contact page built with **React + Vite**.
 - Configurable submission:
 	- If `VITE_CONTACT_ENDPOINT` is set → POST JSON to that endpoint
 	- Else if EmailJS env vars are set → send via EmailJS (no mail client opens)
-	- Otherwise → fallback to `mailto:` with prefilled subject/body
+	- Otherwise → shows a configuration error (no `mailto:` fallback)
 
 ## Getting Started
 
