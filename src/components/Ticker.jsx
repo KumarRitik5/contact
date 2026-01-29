@@ -2,12 +2,17 @@ export default function Ticker({
   text = 'Open to opportunities • Fast replies • Let’s build something great',
   className = '',
   repeats = 6,
+  speedSeconds = 40,
   ariaHidden = true,
 }) {
   const items = Array.from({ length: Math.max(3, repeats) }, (_, i) => i);
 
   return (
-    <div className={`ticker ${className}`.trim()} aria-hidden={ariaHidden}>
+    <div
+      className={`ticker ${className}`.trim()}
+      aria-hidden={ariaHidden}
+      style={{ '--speed': `${Math.max(10, Number(speedSeconds) || 40)}s` }}
+    >
       <div className="ticker__mask">
         <div className="ticker__track">
           <div className="ticker__group">

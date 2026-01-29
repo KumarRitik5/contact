@@ -38,11 +38,14 @@ export default function App() {
             <div className="brand__text">Contact</div>
           </div>
 
-          <ThemeToggle theme={theme} setTheme={setTheme} />
-        </div>
+          <div className="header__marquee">
+            <Ticker
+              text="Open to opportunities • Fast replies • Clean, modern builds"
+              speedSeconds={55}
+            />
+          </div>
 
-        <div className="container container--edge header__ticker">
-          <Ticker text="Open to opportunities • Fast replies • Clean, modern builds" />
+          <ThemeToggle theme={theme} setTheme={setTheme} />
         </div>
 
         <div className="container hero">
