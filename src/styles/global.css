@@ -982,12 +982,12 @@ svg {
 
 .ticker__item {
   white-space: nowrap;
-  color: var(--muted);
+  color: var(--muted2);
   font-family: var(--font-mono);
   font-weight: 600;
   font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
 }
 
 @media (prefers-reduced-motion: reduce) {
