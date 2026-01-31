@@ -14,7 +14,8 @@ export default function App() {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('theme');
     if (saved === 'light' || saved === 'dark') return saved;
-    return window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light';
+    // Default is light mode unless the user explicitly chose otherwise.
+    return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
   });
 
   useEffect(() => {
