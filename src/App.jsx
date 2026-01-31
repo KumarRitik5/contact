@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import ContactCard from './components/ContactCard.jsx';
-import ContactForm from './components/ContactForm.jsx';
 import Footer from './components/Footer.jsx';
 import Logo from './components/Logo.jsx';
 import Reveal from './components/Reveal.jsx';
@@ -8,6 +7,8 @@ import SocialLinks from './components/SocialLinks.jsx';
 import Ticker from './components/Ticker.jsx';
 import ThemeToggle from './components/ThemeToggle.jsx';
 import { CONTACT } from './config/contact.js';
+
+const ContactForm = lazy(() => import('./components/ContactForm.jsx'));
 
 export default function App() {
   const [theme, setTheme] = useState(() => {
@@ -28,6 +29,37 @@ export default function App() {
   const heroSubtitle = useMemo(() => {
     return 'Send a message with a bit of detail — I usually reply as soon as I can.';
   }, []);
+
+  const messageSectionRef = useRef(null);
+  const [showContactForm, setShowContactForm] = useState(() => {
+    // If user lands directly on #message, render immediately.
+    return typeof window !== 'undefined' && window.location?.hash === '#message';
+  });
+
+  useEffect(() => {
+    if (showContactForm) return;
+    const el = messageSectionRef.current;
+    if (!el) return;
+
+    if (!('IntersectionObserver' in window)) {
+      setShowContactForm(true);
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShowContactForm(true);
+          io.disconnect();
+        }
+      },
+      // Start loading before it's visible so it feels instant.
+      { root: null, rootMargin: '500px 0px', threshold: 0.01 }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, [showContactForm]);
 
   return (
     <div className="page">
@@ -76,9 +108,19 @@ export default function App() {
           </Reveal>
         </section>
 
-        <section className="stack" id="message">
+        <section className="stack" id="message" ref={messageSectionRef}>
           <Reveal delayMs={140}>
-            <ContactForm contact={CONTACT} />
+            {showContactForm ? (
+              <Suspense fallback={<div className="card"><div className="card__inner"><div className="hint">Loading form…</div></div></div>}>
+                <ContactForm contact={CONTACT} />
+              </Suspense>
+            ) : (
+              <div className="card">
+                <div className="card__inner">
+                  <div className="hint">Form loads as you scroll.</div>
+                </div>
+              </div>
+            )}
           </Reveal>
         </section>
       </main>

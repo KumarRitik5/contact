@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import emailjs from '@emailjs/browser';
 
 const STORAGE_KEY = 'contact_form_draft_v1';
 
@@ -52,7 +51,10 @@ export default function ContactForm({ contact }) {
 
   const turnstileRef = useRef(null);
   const turnstileWidgetIdRef = useRef(null);
+  const turnstileAutoLoadRef = useRef(null);
   const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileShouldLoad, setTurnstileShouldLoad] = useState(false);
+  const [turnstileLoadError, setTurnstileLoadError] = useState('');
 
   const [values, setValues] = useState(() => {
     const draft = draftFromStorage();
@@ -107,45 +109,111 @@ export default function ContactForm({ contact }) {
   useEffect(() => {
     if (!hasTurnstile) return;
 
+    // Avoid loading Turnstile (Cloudflare) on initial page load.
+    // We will start loading when the form is visible or the user focuses the form.
+    setTurnstileLoadError('');
+
+    const el = turnstileAutoLoadRef.current;
+    if (!el) return;
+
+    if (!('IntersectionObserver' in window)) {
+      // Old browsers: fall back to immediate load.
+      setTurnstileShouldLoad(true);
+      return;
+    }
+
     let cancelled = false;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (cancelled) return;
+        if (entries.some((e) => e.isIntersecting)) {
+          setTurnstileShouldLoad(true);
+          io.disconnect();
+        }
+      },
+      { root: null, threshold: 0.1 }
+    );
 
-    function ensureScript() {
-      if (window.turnstile) return;
-
-      const existing = document.querySelector('script[data-turnstile="true"]');
-      if (existing) return;
-
-      const script = document.createElement('script');
-      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-      script.async = true;
-      script.defer = true;
-      script.dataset.turnstile = 'true';
-      document.head.appendChild(script);
-    }
-
-    function tryRender() {
-      if (cancelled) return;
-      if (!turnstileRef.current) return;
-      if (!window.turnstile) return;
-      if (turnstileWidgetIdRef.current) return;
-
-      turnstileWidgetIdRef.current = window.turnstile.render(turnstileRef.current, {
-        sitekey: turnstileSiteKey,
-        callback: (token) => {
-          setTurnstileToken(typeof token === 'string' ? token : '');
-        },
-        'expired-callback': () => setTurnstileToken(''),
-        'error-callback': () => setTurnstileToken(''),
-      });
-    }
-
-    ensureScript();
-    const interval = window.setInterval(tryRender, 200);
-    tryRender();
+    io.observe(el);
 
     return () => {
       cancelled = true;
-      window.clearInterval(interval);
+      io.disconnect();
+    };
+  }, [hasTurnstile]);
+
+  useEffect(() => {
+    if (!hasTurnstile) return;
+    if (!turnstileShouldLoad) return;
+
+    let cancelled = false;
+
+    function loadTurnstileScript() {
+      if (window.turnstile) return Promise.resolve();
+
+      const existing = document.querySelector('script[data-turnstile="true"]');
+      if (existing) {
+        return new Promise((resolve, reject) => {
+          const onLoad = () => resolve();
+          const onError = () => reject(new Error('Turnstile script failed to load.'));
+          existing.addEventListener('load', onLoad, { once: true });
+          existing.addEventListener('error', onError, { once: true });
+
+          // Safety: in case the script already loaded before listeners attached.
+          const timeout = window.setTimeout(() => {
+            if (window.turnstile) resolve();
+            else reject(new Error('Turnstile script load timed out.'));
+          }, 12000);
+
+          const cleanup = () => window.clearTimeout(timeout);
+          existing.addEventListener('load', cleanup, { once: true });
+          existing.addEventListener('error', cleanup, { once: true });
+        });
+      }
+
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+        script.async = true;
+        script.defer = true;
+        script.dataset.turnstile = 'true';
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Turnstile script failed to load.'));
+        document.head.appendChild(script);
+
+        window.setTimeout(() => {
+          if (window.turnstile) resolve();
+          else reject(new Error('Turnstile script load timed out.'));
+        }, 12000);
+      });
+    }
+
+    async function renderTurnstile() {
+      try {
+        await loadTurnstileScript();
+        if (cancelled) return;
+        if (!turnstileRef.current) return;
+        if (!window.turnstile) return;
+        if (turnstileWidgetIdRef.current) return;
+
+        turnstileWidgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+          sitekey: turnstileSiteKey,
+          callback: (token) => {
+            setTurnstileToken(typeof token === 'string' ? token : '');
+          },
+          'expired-callback': () => setTurnstileToken(''),
+          'error-callback': () => setTurnstileToken(''),
+        });
+      } catch (err) {
+        if (cancelled) return;
+        setTurnstileLoadError(err instanceof Error ? err.message : 'Turnstile failed to load.');
+      }
+    }
+
+    renderTurnstile();
+
+    return () => {
+      cancelled = true;
       try {
         if (window.turnstile && turnstileWidgetIdRef.current) {
           window.turnstile.remove(turnstileWidgetIdRef.current);
@@ -155,7 +223,7 @@ export default function ContactForm({ contact }) {
       }
       turnstileWidgetIdRef.current = null;
     };
-  }, [hasTurnstile, turnstileSiteKey]);
+  }, [hasTurnstile, turnstileShouldLoad, turnstileSiteKey]);
 
   const canSubmit = Object.keys(errors).length === 0 && status.state !== 'submitting';
 
@@ -252,6 +320,7 @@ export default function ContactForm({ contact }) {
           meta: id ? { id } : null,
         });
       } else if (hasEmailjs) {
+        const emailjs = (await import('@emailjs/browser')).default;
         await emailjs.send(
           emailjsServiceId,
           emailjsTemplateId,
@@ -302,7 +371,14 @@ export default function ContactForm({ contact }) {
       <div className="card__inner">
         <div className="card__title">Send a Message</div>
 
-        <form className="form" onSubmit={onSubmit} noValidate>
+        <form
+          className="form"
+          onSubmit={onSubmit}
+          noValidate
+          onFocusCapture={() => {
+            if (hasTurnstile) setTurnstileShouldLoad(true);
+          }}
+        >
           <div className="form__row">
             <label className="label">
               Your name
@@ -398,9 +474,10 @@ export default function ContactForm({ contact }) {
           {hasTurnstile ? (
             <div className="row" style={{ justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
               <div>
-                <div className="turnstile">
-                  <div ref={turnstileRef} />
+                <div className="turnstile" ref={turnstileAutoLoadRef}>
+                  {turnstileShouldLoad ? <div ref={turnstileRef} /> : <div className="hint">Verification loads when needed.</div>}
                 </div>
+                {turnstileLoadError ? <div className="error">{turnstileLoadError}</div> : null}
                 {showError('turnstile') ? <div className="error">{errors.turnstile}</div> : null}
               </div>
               <div className="hint" style={{ maxWidth: 280 }}>
